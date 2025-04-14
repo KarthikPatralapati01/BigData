@@ -31,14 +31,70 @@
 ---
 
 ## 🧩 Pipeline Architecture
+🗃️ Data Pipeline Stages
+1. 📥 Ingestion
+Real-time Yelp reviews streamed to Pub/Sub topic.
 
-```mermaid
-graph TD
-  A[Yelp API] -->|Stream JSON| B(Pub/Sub)
-  B --> C[BigQuery (Raw Layer)]
-  C --> D{Trigger}
-  D -->|Batch/Trigger| E[Dataproc PySpark Job]
-  E --> F[Model Training + Predictions]
-  F --> G[BigQuery (Processed)]
-  F --> H[Cloud Functions (Model API)]
-  G --> I[Looker Studio Dashboard]
+Data lands in BigQuery (raw layer) for staging.
+
+2. 🔄 Streaming Pipeline
+BigQuery triggers a Dataproc PySpark job for:
+
+Text cleaning
+
+Tokenization
+
+TF-IDF vectorization
+
+Inference using pre-trained models
+
+3. 📦 Batch Training Pipeline
+Historical data stored in Cloud Storage
+
+Trained using Spark MLlib on Dataproc with:
+
+Logistic Regression
+
+Support Vector Machine (SVM)
+
+Naive Bayes classifiers
+
+Best-performing model exported and deployed to Cloud Functions
+
+4. 📊 Visualization
+Predictions and trends stored in BigQuery
+
+Dashboards created using Looker Studio
+
+Sentiment by category
+
+Sentiment trend over time
+
+Review volume heatmaps
+
+5. 🔁 Retraining (Optional)
+Periodic job (Airflow or manual) to retrain models with new data
+
+🧪 Experiments
+Model	Accuracy	AUC Score	Notes
+Logistic Regression	84.3%	0.88	Fast and consistent
+Naive Bayes	80.5%	0.84	Performs well on sparse text
+SVM	85.1%	0.89	Slightly higher accuracy, slower inference
+📎 Key Features
+✅ Scalable to millions of reviews using Spark on Dataproc
+
+✅ Built entirely with serverless and managed GCP services
+
+✅ Supports both real-time prediction and batch retraining
+
+✅ End-to-end automation ready with triggers and functions
+
+✅ Visual insights easily shareable with business teams
+
+🧠 Future Enhancements
+ Add BERT/Transformer-based sentiment model for improved accuracy
+
+ AutoML integration for Auto retraining and hyperparameter tuning
+
+ Alerting on sentiment shifts via Cloud Monitoring
+
